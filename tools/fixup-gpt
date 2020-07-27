@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+import sys
+import ctypes
+import binascii
+
+
+class GPTHeader(ctypes.Structure):
+    _pack_ = 1
+    _fields_ = [
+        ("Signature", ctypes.c_char * 8),
+        ("Revision", ctypes.c_uint),
+        ("HeaderSize", ctypes.c_uint),
+        ("HeaderCRC32", ctypes.c_uint),
+        ("Reserved", ctypes.c_uint),
+        ("MyLBA", ctypes.c_ulonglong),
+        ("AlternateLBA", ctypes.c_ulonglong),
+        ("FirstUsableLBA", ctypes.c_ulonglong),
+        ("LastUsableLBA", ctypes.c_ulonglong),
+        ("DiskGUID", ctypes.c_char * 16),
+        ("PartitionEntryLBA", ctypes.c_ulonglong),
+        ("NumberOfPartitionEntries", ctypes.c_uint),
+        ("SizeOfPartitionEntry", ctypes.c_uint),
+        ("PartitionEntryArrayCRC32", ctypes.c_uint)
+    ]
+
+
+GPT_PARTITION_ENTRY_SIZE = 0x80
+GPT_ENTRIES = 16
+
+
+def lba(num):
+    return num * 512
+
+
+def fixup_gpt(device):
+    with open(device, 'r+b') as f:
+        gpt_header = GPTHeader()
+        gpt_alternate_header = GPTHeader()
+        gpt_partition_table = bytearray(GPT_ENTRIES * GPT_PARTITION_ENTRY_SIZE)
+
+        f.seek(lba(1))
+        f.readinto(gpt_header)
+        f.seek(lba(2))
+        f.readinto(gpt_partition_table)
+        f.seek(lba(gpt_header.AlternateLBA))
+        f.readinto(gpt_alternate_header)
+
+        gpt_header.HeaderCRC32 = 0
+        gpt_header.FirstUsableLBA = 5
+        gpt_header.PartitionEntryArrayCRC32 = binascii.crc32(gpt_partition_table)
+        gpt_header.NumberOfPartitionEntries = GPT_ENTRIES
+        gpt_header.HeaderCRC32 = binascii.crc32(gpt_header)
+
+        gpt_alternate_header.HeaderCRC32 = 0
+        gpt_alternate_header.FirstUsableLBA = 5
+        gpt_alternate_header.PartitionEntryArrayCRC32 = binascii.crc32(gpt_partition_table)
+        gpt_alternate_header.NumberOfPartitionEntries = GPT_ENTRIES
+        gpt_alternate_header.HeaderCRC32 = binascii.crc32(gpt_alternate_header)
+
+        f.seek(lba(1))
+        f.write(gpt_header)
+        f.seek(lba(gpt_header.AlternateLBA))
+        f.write(gpt_alternate_header)
+
+
+if __name__ == '__main__':
+    sys.exit(fixup_gpt(*sys.argv[1:]))
+

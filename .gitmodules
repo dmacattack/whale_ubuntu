@@ -1,0 +1,9 @@
+[submodule "external/rcw"]
+	path = external/rcw
+	url = ../rcw.git
+[submodule "external/u-boot"]
+	path = external/u-boot
+	url = ../u-boot.git
+[submodule "external/atf"]
+	path = external/atf
+	url = ../atf.git
