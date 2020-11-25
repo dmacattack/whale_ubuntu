@@ -11,7 +11,7 @@ include $(SRCROOT)/board/$(PROFILE)/Makefile
 .PHONY: all dirs bootloader
 
 $(OBJDIR)/%:
-	rsync --exclude='.git' -al $(EXTERNAL_DIR)/$(notdir $@)/ $@ 
+	mkdir -p $@ && rsync --exclude='.git' -al $(EXTERNAL_DIR)/$(notdir $@)/ $@
 
 rootfs: dirs
 	qemu-debootstrap \
