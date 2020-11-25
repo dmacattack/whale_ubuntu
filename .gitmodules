@@ -8,3 +8,4 @@
 [submodule "external/atf"]
 	path = external/atf
 	url = ../atf.git
+	branch = whle-ls1046a
