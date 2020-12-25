@@ -9,3 +9,9 @@
 	path = external/atf
 	url = ../atf.git
 	branch = whle-ls1046a
+[submodule "external/qoriq-fm-ucode"]
+	path = external/qoriq-fm-ucode
+	url = https://github.com/NXP/qoriq-fm-ucode
+[submodule "at91bootstrap3"]
+	path = external/at91bootstrap
+	url = git@gitlab.conclusive.pl:conclusive/at91bootstrap.git
