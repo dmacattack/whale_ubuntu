@@ -1,7 +1,9 @@
+MACHINE_ARCH := arm64
 BOOT_SIZE := 32M
-BOOTLOADER_DEPENDS := rcw atf u-boot fip qoriq-fm-ucode
-KERNEL_VERSION := 5.4.0-43-generic
+BOOTLOADER_TARGETS := atf fip qoriq-fm-ucode
+BOOTLOADER_MODULES := rcw atf u-boot qoriq-fm-ucode
 DEVICETREE_NAME := freescale/fsl-ls1046a-whle.dtb
+KERNEL_VARIANT := whle-ls1
 BL2_PATH := $(OBJDIR)/atf/build/ls1046awhle/release/bl2_emmc.pbl
 FIP_PATH := $(OBJDIR)/atf/build/ls1046awhle/release/fip.bin
 FMAN_FW_PATH := $(OBJDIR)/qoriq-fm-ucode/fsl_fman_ucode_ls1046_r1.0_106_4_18.bin
@@ -16,9 +18,11 @@ define WRITE_BOOTLOADER
 endef
 
 rcw: $(OBJDIR)/rcw
+	$(call msg, Building RCW)
 	$(MAKE) -C $</whle-ls1046a
 
 atf: $(OBJDIR)/atf rcw
+	$(call msg, Building ARM Trusted Firmware)
 	$(MAKE) -C $< pbl \
 	    PLAT=ls1046awhle \
 	    BOOT_MODE=emmc \
@@ -26,10 +30,12 @@ atf: $(OBJDIR)/atf rcw
 	    CROSS_COMPILE=aarch64-linux-gnu-
 
 u-boot: $(OBJDIR)/u-boot
+	$(call msg, Building U-Boot)
 	$(MAKE) -C $< whle_ls1046a_defconfig ARCH=arm
 	$(MAKE) -C $< ARCH=arm CROSS_COMPILE=aarch64-linux-gnu-
 
-fip: $(OBJDIR)/atf u-boot
+fip: $(OBJDIR)/atf atf u-boot
+	$(call msg, Building FIP image)
 	$(MAKE) -C $< fip \
 	    PLAT=ls1046awhle \
 	    BL33=../u-boot/u-boot.bin \
