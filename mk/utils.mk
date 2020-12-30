@@ -1,5 +1,5 @@
 define msg
-@printf "\033[7m >>> %s\033[0m \n" "$(strip $(1))"
+@printf "\033[7m >>> %s \033[0m\n" "$(strip $(1))"
 endef
 
 define get_partition_start

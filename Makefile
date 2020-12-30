@@ -20,19 +20,20 @@ include mk/utils.mk
 include $(SRCROOT)/board/$(PROFILE)/Makefile
 
 export FK_MACHINE MACHINE_ARCH SRCROOT ROOTDIR ROOTFS_UUID
-export CHROOT_CMD
+export CHROOT_CMD KERNEL_VARIANT DEVICETREE_NAME PROFILE
 
-.PHONY: all dirs bootloader rootfs rootfs-impl image
+.PHONY: all dirs bootloader rootfs rootfs-impl image __force
+__force:
 
 $(OBJDIR)/.stamp-sync-%: external/%
 	$(call msg, Syncing $<)
 	mkdir -p $(OBJDIR)/$(<F)
-	rsync --exclude='.git' -al $< $(OBJDIR)/$(<F)
+	rsync --exclude='.git' -al $</ $(OBJDIR)/$(<F)
 	touch $@
 
-$(OBJDIR)/.stamp-customize-%: customize/%.sh
+$(OBJDIR)/.stamp-customize-%: customize/%.sh __force
 	$(call msg, Running customize script $(<F))
-	sh $<
+	sh -e $<
 	touch $@
 
 rootfs: dirs
