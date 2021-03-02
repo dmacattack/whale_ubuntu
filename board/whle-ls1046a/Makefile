@@ -4,6 +4,7 @@ BOOTLOADER_TARGETS := atf fip qoriq-fm-ucode
 BOOTLOADER_MODULES := rcw atf u-boot qoriq-fm-ucode
 DEVICETREE_NAME := freescale/fsl-ls1046a-whle.dtb
 KERNEL_VARIANT := whle-ls1
+KERNEL_BOOTARGS := console=ttyS0,115200 root=/dev/mmcblk0p1 earlycon=uart8250,mmio,0x21c0500
 BL2_PATH := $(OBJDIR)/atf/build/ls1046awhle/release/bl2_emmc.pbl
 FIP_PATH := $(OBJDIR)/atf/build/ls1046awhle/release/fip.bin
 FMAN_FW_PATH := $(OBJDIR)/qoriq-fm-ucode/fsl_fman_ucode_ls1046_r1.0_106_4_18.bin
@@ -31,8 +32,8 @@ atf: $(OBJDIR)/atf rcw
 
 u-boot: $(OBJDIR)/u-boot
 	$(call msg, Building U-Boot)
-	$(MAKE) -C $< whle_ls1046a_defconfig ARCH=arm
-	$(MAKE) -C $< ARCH=arm CROSS_COMPILE=aarch64-linux-gnu-
+	$(MAKE) -C $< whle_ls1046a_defconfig
+	$(MAKE) -C $< CROSS_COMPILE=aarch64-linux-gnu-
 
 fip: $(OBJDIR)/atf atf u-boot
 	$(call msg, Building FIP image)

@@ -2,7 +2,8 @@ timeout 100
 menu title Ubuntu boot options
 
 label Ubuntu
-    menu label Ubuntu 20.04
+    menu label Ubuntu @UBUNTU_VERSION@
     linux /boot/vmlinuz
+    append @KERNEL_BOOTARGS@
     initrd /boot/initrd.img
     fdt /boot/board.dtb

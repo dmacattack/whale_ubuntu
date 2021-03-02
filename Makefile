@@ -1,5 +1,6 @@
 SRCROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 TARGET_VERSION ?= focal
+UBUNTU_VERSION ?= 20.04
 OBJDIR ?= $(SRCROOT)/build-$(PROFILE)
 ROOTDIR := $(OBJDIR)/rootfs
 IMAGE_FILE ?= $(OBJDIR)/system.img
@@ -21,11 +22,12 @@ include $(SRCROOT)/board/$(PROFILE)/Makefile
 
 export FK_MACHINE MACHINE_ARCH SRCROOT ROOTDIR ROOTFS_UUID
 export CHROOT_CMD KERNEL_VARIANT DEVICETREE_NAME PROFILE
+export UBUNTU_VERSION KERNEL_BOOTARGS
 
 .PHONY: all dirs bootloader rootfs rootfs-impl image __force
 __force:
 
-$(OBJDIR)/.stamp-sync-%: external/%
+$(OBJDIR)/.stamp-sync-%: external/% __force
 	$(call msg, Syncing $<)
 	mkdir -p $(OBJDIR)/$(<F)
 	rsync --exclude='.git' -al $</ $(OBJDIR)/$(<F)
