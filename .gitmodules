@@ -15,3 +15,9 @@
 [submodule "at91bootstrap3"]
 	path = external/at91bootstrap
 	url = git@gitlab.conclusive.pl:conclusive/at91bootstrap.git
+[submodule "external/gpt-manipulator"]
+	path = external/gpt-manipulator
+	url = git@gitlab.conclusive.pl:conclusive/gpt-manipulator.git
+[submodule "external/hart-software-services"]
+	path = external/hart-software-services
+	url = git@gitlab.conclusive.pl:devices/rchd-pf/hart-software-services.git

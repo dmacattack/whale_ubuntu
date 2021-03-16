@@ -7,6 +7,7 @@ IMAGE_FILE ?= $(OBJDIR)/system.img
 EXTERNAL_DIR := $(SRCROOT)/external
 IMAGE_SIZE ?= 1600M
 ROOTFS_SIZE ?= 1536M
+ROOTFS_LBA = $(call get_partition_start, $(IMAGE_FILE), $(SYSTEM_PARTITION_INDEX))
 INCLUDE_PACKAGES := $(shell cat $(SRCROOT)/config/packages | sed -z 's/\n/ /g')
 BOOT_SIZE_BYTES = $(shell numfmt --from=iec $(BOOT_SIZE))
 BOOT_SIZE_BLOCKS = $(shell expr $(BOOT_SIZE_BYTES) / 1024)
@@ -16,13 +17,15 @@ CUSTOMIZE_SCRIPTS := $(notdir $(wildcard $(SRCROOT)/customize/*.sh))
 CUSTOMIZE_TARGETS := $(sort $(addprefix $(OBJDIR)/.stamp-customize-, $(basename $(CUSTOMIZE_SCRIPTS))))
 FK_MACHINE := none
 CHROOT_CMD := chroot $(ROOTDIR)
+BOARD_DIR := $(SRCROOT)/board/$(PROFILE)
+PATH := $(PATH):$(OBJDIR)/bin
 
 include mk/utils.mk
-include $(SRCROOT)/board/$(PROFILE)/Makefile
+include $(BOARD_DIR)/Makefile
 
 export FK_MACHINE MACHINE_ARCH SRCROOT ROOTDIR ROOTFS_UUID
 export CHROOT_CMD KERNEL_VARIANT DEVICETREE_NAME PROFILE
-export UBUNTU_VERSION KERNEL_BOOTARGS
+export UBUNTU_VERSION KERNEL_BOOTARGS BOARD_DIR PATH
 
 .PHONY: all dirs bootloader rootfs rootfs-impl image __force
 __force:
@@ -66,13 +69,18 @@ dirs:
 
 bootloader: $(addprefix $(OBJDIR)/.stamp-sync-,$(BOOTLOADER_MODULES)) $(BOOTLOADER_TARGETS)
 
-image: bootloader rootfs $(CUSTOMIZE_TARGETS)
+image: bootloader rootfs gpt-manipulator $(CUSTOMIZE_TARGETS)
 	$(call msg, Building system image)
 	truncate -s $(IMAGE_SIZE) $(IMAGE_FILE)
 	truncate -s $(ROOTFS_SIZE) $(ROOTFS_FILE)
 	sgdisk -Z $(IMAGE_FILE)
-	sgdisk -og $(IMAGE_FILE)
-	sgdisk -n 1:$(BOOT_SIZE):0 -c 1:"ubuntu" $(IMAGE_FILE)
+	gpt-manipulator $(IMAGE_FILE) -c $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE)
 	mkfs.ext4 -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $(ROOTFS_FILE)
-	dd if=$(OBJDIR)/rootfs.img of=$(IMAGE_FILE) seek=$(BOOT_SIZE_BLOCKS) bs=1024 conv=notrunc
+	dd if=$(OBJDIR)/rootfs.img of=$(IMAGE_FILE) seek=$(ROOTFS_LBA) bs=512 conv=notrunc
 	$(WRITE_BOOTLOADER)
+
+gpt-manipulator: $(OBJDIR)/gpt-manipulator
+
+$(OBJDIR)/gpt-manipulator: $(SRCROOT)/external/gpt-manipulator
+	cd $< && cargo build --release
+	cd $< && cargo install --path . --root $(@D)

@@ -3,7 +3,7 @@ define msg
 endef
 
 define get_partition_start
-sgdisk -i $(2) $(1) | awk '/First sector:/ { print $3 }'
+$(shell $(OBJDIR)/bin/gpt-manipulator $(1) --get-first-lba $(2))
 endef
 
 define chroot_cmd

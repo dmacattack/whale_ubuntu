@@ -1,0 +1,12 @@
+---
+header:
+  sector_size: 512
+  hybrid_parts: [1]
+partitions:
+  - number: 1
+    type_guid: "21686148-6449-6E6F-744E-656564454649"
+    size: "8MB"
+    name: "boot"
+  - number: 2
+    type_guid: "4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709"
+    name: "rootfs"
