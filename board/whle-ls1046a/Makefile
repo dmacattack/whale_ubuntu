@@ -4,7 +4,7 @@ BOOTLOADER_TARGETS := atf fip qoriq-fm-ucode
 BOOTLOADER_MODULES := rcw atf u-boot qoriq-fm-ucode
 DEVICETREE_NAME := freescale/fsl-ls1046a-whle.dtb
 KERNEL_VARIANT := whle-ls1
-KERNEL_BOOTARGS := console=ttyS0,115200 root=/dev/mmcblk0p1 earlycon=uart8250,mmio,0x21c0500
+KERNEL_BOOTARGS := console=ttyS0,115200 root=/dev/mmcblk0p1 earlycon=uart8250,mmio,0x21c0500 rootwait rw
 BL2_PATH := $(OBJDIR)/atf/build/ls1046awhle/release/bl2_emmc.pbl
 FIP_PATH := $(OBJDIR)/atf/build/ls1046awhle/release/fip.bin
 FMAN_FW_PATH := $(OBJDIR)/qoriq-fm-ucode/fsl_fman_ucode_ls1046_r1.0_106_4_18.bin
