@@ -69,13 +69,17 @@ dirs:
 
 bootloader: $(addprefix $(OBJDIR)/.stamp-sync-,$(BOOTLOADER_MODULES)) $(BOOTLOADER_TARGETS)
 
-image: bootloader rootfs gpt-manipulator $(CUSTOMIZE_TARGETS)
+$(ROOTFS_FILE): rootfs
+	truncate -s $(ROOTFS_SIZE) $@
+	mkfs.ext4 -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $@
+
+$(IMAGE_FILE): $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE)
+	truncate -s $(IMAGE_SIZE) $@
+	sgdisk -Z $@
+	gpt-manipulator $@ -c $<
+
+image: bootloader gpt-manipulator $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(IMAGE_FILE)
 	$(call msg, Building system image)
-	truncate -s $(IMAGE_SIZE) $(IMAGE_FILE)
-	truncate -s $(ROOTFS_SIZE) $(ROOTFS_FILE)
-	sgdisk -Z $(IMAGE_FILE)
-	gpt-manipulator $(IMAGE_FILE) -c $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE)
-	mkfs.ext4 -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $(ROOTFS_FILE)
 	dd if=$(OBJDIR)/rootfs.img of=$(IMAGE_FILE) seek=$(ROOTFS_LBA) bs=512 conv=notrunc
 	$(WRITE_BOOTLOADER)
 
