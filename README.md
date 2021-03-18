@@ -66,9 +66,9 @@ sudo apt install gcc-riscv64-linux-gnu
 
     `usbdmsc`
 
-5. Determine path of the new disk (</dev/sdx>)
+5. Determine path of the new disk (</dev/sdX>)
 
 6. Run:
 
-	`sudo make flash PROFILE=rchd-pf TARGET_PATH=</dev/sdx>`
+	`sudo make flash PROFILE=rchd-pf TARGET_PATH=</dev/sdX>`
 
