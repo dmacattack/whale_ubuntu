@@ -78,7 +78,7 @@ $(IMAGE_FILE): $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE)
 	sgdisk -Z $@
 	gpt-manipulator $@ -c $<
 
-image: bootloader gpt-manipulator $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(IMAGE_FILE)
+image: bootloader gpt-manipulator $(ROOTFS_FILE) $(CUSTOMIZE_TARGETS) $(IMAGE_FILE)
 	$(call msg, Building system image)
 	dd if=$(OBJDIR)/rootfs.img of=$(IMAGE_FILE) seek=$(ROOTFS_LBA) bs=512 conv=notrunc
 	$(WRITE_BOOTLOADER)
