@@ -19,6 +19,7 @@ FK_MACHINE := none
 CHROOT_CMD := chroot $(ROOTDIR)
 BOARD_DIR := $(SRCROOT)/board/$(PROFILE)
 PATH := $(PATH):$(OBJDIR)/bin
+TARGET_PATH ?= 
 
 include mk/utils.mk
 include $(BOARD_DIR)/Makefile
@@ -27,7 +28,7 @@ export FK_MACHINE MACHINE_ARCH SRCROOT ROOTDIR ROOTFS_UUID
 export CHROOT_CMD KERNEL_VARIANT DEVICETREE_NAME PROFILE
 export UBUNTU_VERSION KERNEL_BOOTARGS BOARD_DIR PATH
 
-.PHONY: all dirs bootloader rootfs rootfs-impl image __force
+.PHONY: all dirs bootloader rootfs rootfs-impl image flash __force
 __force:
 
 $(OBJDIR)/.stamp-sync-%: external/% __force
@@ -69,7 +70,7 @@ dirs:
 
 bootloader: $(addprefix $(OBJDIR)/.stamp-sync-,$(BOOTLOADER_MODULES)) $(BOOTLOADER_TARGETS)
 
-$(ROOTFS_FILE): rootfs
+$(ROOTFS_FILE):
 	truncate -s $(ROOTFS_SIZE) $@
 	mkfs.ext4 -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $@
 
@@ -78,10 +79,13 @@ $(IMAGE_FILE): $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE)
 	sgdisk -Z $@
 	gpt-manipulator $@ -c $<
 
-image: bootloader gpt-manipulator $(ROOTFS_FILE) $(CUSTOMIZE_TARGETS) $(IMAGE_FILE)
+image: bootloader gpt-manipulator rootfs $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(IMAGE_FILE)
 	$(call msg, Building system image)
 	dd if=$(OBJDIR)/rootfs.img of=$(IMAGE_FILE) seek=$(ROOTFS_LBA) bs=512 conv=notrunc
 	$(WRITE_BOOTLOADER)
+
+flash: __force
+	dd if=$(IMAGE_FILE) of=$(TARGET_PATH) bs=1M
 
 gpt-manipulator: $(OBJDIR)/gpt-manipulator
 

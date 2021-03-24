@@ -7,7 +7,7 @@ This project is used to build Ubuntu 20.04 (focal) for Conclusive Engineering de
 Install following packages before continuing with build process.
 
 ```shell
-sudo apt install debootstrap util-linux make git binutils-arm-linux-gnueaeabihf gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
+sudo apt install debootstrap util-linux make git binutils-arm-linux-gnueaeabihf gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu bison flex gcc-riscv64-linux-gnu libyaml-cpp-dev libyaml-dev libelf-dev qemu-user-static 
 ```
 
 Initialize submodules containing external projects:
@@ -42,5 +42,33 @@ git submodule update --init --recursive
 ...
 
 ##  RCHD-PF
+### Board specific prerequisites
+Install following packages before continuing with build process.
 
-...
+```shell
+sudo apt install gcc-riscv64-linux-gnu
+```
+
+### Build procedure
+1. Prepare eMMC image:
+
+    `make image PROFILE=rchd-pf`
+
+### Flash procedure
+
+1. Reset the RCHD-PF board.
+
+2. Stop at HSS by pressing <space> within the timeout
+
+3. Connect USB host to the board (micro-B OTB)
+
+4. Enter Mass Storage mode by issueing HSS command:
+
+    `usbdmsc`
+
+5. Determine path of the new disk (</dev/sdX>)
+
+6. Run:
+
+	`sudo make flash PROFILE=rchd-pf TARGET_PATH=</dev/sdX>`
+
