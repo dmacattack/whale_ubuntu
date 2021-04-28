@@ -19,7 +19,7 @@ FK_MACHINE := none
 CHROOT_CMD := chroot $(ROOTDIR)
 BOARD_DIR := $(SRCROOT)/board/$(PROFILE)
 PATH := $(PATH):$(OBJDIR)/bin
-TARGET_PATH ?= 
+TARGET_PATH ?=
 
 include mk/utils.mk
 include $(BOARD_DIR)/Makefile
@@ -71,13 +71,15 @@ dirs:
 bootloader: $(addprefix $(OBJDIR)/.stamp-sync-,$(BOOTLOADER_MODULES)) $(BOOTLOADER_TARGETS)
 
 $(ROOTFS_FILE):
+	$(call msg, Prepare rootfs)
 	truncate -s $(ROOTFS_SIZE) $@
 	mkfs.ext4 -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $@
 
-$(IMAGE_FILE): $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE)
+$(IMAGE_FILE):
+	$(call msg, Prepare partitions)
 	truncate -s $(IMAGE_SIZE) $@
 	sgdisk -Z $@
-	gpt-manipulator $@ -c $<
+	gpt-manipulator create $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE) $@
 
 image: bootloader gpt-manipulator rootfs $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(IMAGE_FILE)
 	$(call msg, Building system image)
