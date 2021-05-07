@@ -3,7 +3,7 @@ define msg
 endef
 
 define get_partition_start
-$(shell $(OBJDIR)/bin/gpt-manipulator print --get-first-lba $(2) $(1))
+$(shell $(OBJDIR)/bin/gpt-manipulator print $(1) --get-first-lba $(2))
 endef
 
 define chroot_cmd
