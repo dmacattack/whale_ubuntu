@@ -1,0 +1,4 @@
+build rchd:
+  stage: build
+  script:
+    - make image PROFILE=kstr-rchd-pf 
