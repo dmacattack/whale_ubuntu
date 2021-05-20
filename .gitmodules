@@ -1,23 +1,23 @@
-[submodule "external/rcw"]
-	path = external/rcw
-	url = ../rcw.git
-	branch = whle-ls1046a
 [submodule "external/u-boot"]
-	path = external/u-boot
-	url = ../u-boot.git
-[submodule "external/atf"]
-	path = external/atf
-	url = ../atf.git
-	branch = whle-ls1046a
-[submodule "external/qoriq-fm-ucode"]
-	path = external/qoriq-fm-ucode
-	url = https://github.com/NXP/qoriq-fm-ucode
-[submodule "at91bootstrap3"]
-	path = external/at91bootstrap
-	url = git@gitlab.conclusive.pl:conclusive/at91bootstrap.git
+        path = external/u-boot
+        url = ../u-boot.git
 [submodule "external/gpt-manipulator"]
-	path = external/gpt-manipulator
-	url = git@gitlab.conclusive.pl:conclusive/gpt-manipulator.git
+        path = external/gpt-manipulator
+        url = ../gpt-manipulator.git
+[submodule "external/rcw"]
+        path = external/rcw
+        url = ../whle-ls1/rcw.git
+        branch = whle-ls1046a
+[submodule "external/atf"]
+        path = external/atf
+        url = ../whle-ls1/atf.git
+        branch = whle-ls1046a
+[submodule "at91bootstrap"]
+        path = external/at91bootstrap
+        url = ../kstr-sama5d27/at91bootstrap.git
 [submodule "external/hart-software-services"]
-	path = external/hart-software-services
-	url = git@gitlab.conclusive.pl:devices/rchd-pf/hart-software-services.git
+        path = external/hart-software-services
+        url = ../rchd-pf/hart-software-services.git
+[submodule "external/qoriq-fm-ucode"]
+        path = external/qoriq-fm-ucode
+        url = https://github.com/NXP/qoriq-fm-ucode
