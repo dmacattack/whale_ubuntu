@@ -7,7 +7,7 @@ This project is used to build Ubuntu 20.04 (focal) for Conclusive Engineering de
 Install following packages before continuing with build process.
 
 ```shell
-sudo apt install debootstrap util-linux make git binutils-arm-linux-gnueaeabihf gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu bison flex gcc-riscv64-linux-gnu libyaml-cpp-dev libyaml-dev libelf-dev qemu-user-static 
+sudo apt install debootstrap util-linux make git binutils-arm-linux-gnueabihf gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu bison flex gcc-riscv64-linux-gnu libyaml-cpp-dev libyaml-dev libelf-dev qemu-user-static
 ```
 
 Initialize submodules containing external projects:

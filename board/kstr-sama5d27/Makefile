@@ -16,7 +16,7 @@ define WRITE_BOOTLOADER
 	mkfs.fat $(OBJDIR)/boot.img
 	mcopy -i $(OBJDIR)/boot.img $(AT91BOOTSTRAP_PATH) ::boot.bin
 	mcopy -i $(OBJDIR)/boot.img $(UBOOT_PATH) ::u-boot.bin
-	dd if=$(OBJDIR)/boot.img of=$(IMAGE_FILE) bs=512 seek=34 conv=notrunc
+	dd if=$(OBJDIR)/boot.img of=$(SYSTEM_IMG_FILE) bs=512 seek=34 conv=notrunc
 endef
 
 at91bootstrap: $(OBJDIR)/at91bootstrap
