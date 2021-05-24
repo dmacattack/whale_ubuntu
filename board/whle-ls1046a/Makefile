@@ -14,9 +14,9 @@ PARTITION_TABLE := gpt.yml
 .PHONY: rcw atf u-boot fip qoriq-fm-ucode
 
 define WRITE_BOOTLOADER
-	dd if=$(BL2_PATH) of=$(IMAGE_FILE) bs=512 seek=8 conv=notrunc
-	dd if=$(FIP_PATH) of=$(IMAGE_FILE) bs=512 seek=2048 conv=notrunc
-	dd if=$(FMAN_FW_PATH) of=$(IMAGE_FILE) bs=512 seek=18432 conv=notrunc
+	dd if=$(BL2_PATH) of=$(SYSTEM_IMG_FILE) bs=512 seek=8 conv=notrunc
+	dd if=$(FIP_PATH) of=$(SYSTEM_IMG_FILE) bs=512 seek=2048 conv=notrunc
+	dd if=$(FMAN_FW_PATH) of=$(SYSTEM_IMG_FILE) bs=512 seek=18432 conv=notrunc
 endef
 
 rcw: $(OBJDIR)/rcw

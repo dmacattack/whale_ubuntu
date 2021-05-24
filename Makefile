@@ -2,17 +2,17 @@ SRCROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 TARGET_VERSION ?= focal
 UBUNTU_VERSION ?= 20.04
 OBJDIR ?= $(SRCROOT)/build-$(PROFILE)
-ROOTDIR := $(OBJDIR)/rootfs
-IMAGE_FILE ?= $(OBJDIR)/system.img
-EXTERNAL_DIR := $(SRCROOT)/external
-IMAGE_SIZE ?= 1600M
-ROOTFS_SIZE ?= 1536M
-ROOTFS_LBA = $(call get_partition_start, $(IMAGE_FILE), $(SYSTEM_PARTITION_INDEX))
-INCLUDE_PACKAGES := $(shell cat $(SRCROOT)/config/packages | sed -z 's/\n/ /g')
-BOOT_SIZE_BYTES = $(shell numfmt --from=iec $(BOOT_SIZE))
-BOOT_SIZE_BLOCKS = $(shell expr $(BOOT_SIZE_BYTES) / 1024)
+SYSTEM_IMG_FILE ?= $(OBJDIR)/system.img
+SYSTEM_IMG_SIZE ?= 1600M
 ROOTFS_FILE := $(OBJDIR)/rootfs.img
 ROOTFS_UUID := $(shell uuidgen)
+ROOTFS_SIZE ?= 1536M
+ROOTFS_LBA = $(call get_partition_start, $(SYSTEM_IMG_FILE), $(SYSTEM_PARTITION_INDEX))
+BOOT_SIZE_BYTES = $(shell numfmt --from=iec $(BOOT_SIZE))
+BOOT_SIZE_BLOCKS = $(shell expr $(BOOT_SIZE_BYTES) / 1024)
+ROOTDIR := $(OBJDIR)/rootfs
+EXTERNAL_DIR := $(SRCROOT)/external
+INCLUDE_PACKAGES := $(shell cat $(SRCROOT)/config/packages | sed -z 's/\n/ /g')
 CUSTOMIZE_SCRIPTS := $(notdir $(wildcard $(SRCROOT)/customize/*.sh))
 CUSTOMIZE_TARGETS := $(sort $(addprefix $(OBJDIR)/.stamp-customize-, $(basename $(CUSTOMIZE_SCRIPTS))))
 FK_MACHINE := none
@@ -28,7 +28,7 @@ export FK_MACHINE MACHINE_ARCH SRCROOT ROOTDIR ROOTFS_UUID
 export CHROOT_CMD KERNEL_VARIANT DEVICETREE_NAME PROFILE
 export UBUNTU_VERSION KERNEL_BOOTARGS BOARD_DIR PATH
 
-.PHONY: all dirs bootloader rootfs rootfs-impl image flash __force
+.PHONY: all dirs bootloader rootfs rootfs-impl image flash clean __force
 __force:
 
 $(OBJDIR)/.stamp-sync-%: external/% __force
@@ -75,19 +75,22 @@ $(ROOTFS_FILE):
 	truncate -s $(ROOTFS_SIZE) $@
 	mkfs.ext4 -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $@
 
-$(IMAGE_FILE):
+$(SYSTEM_IMG_FILE):
 	$(call msg, Prepare partitions)
-	truncate -s $(IMAGE_SIZE) $@
+	truncate -s $(SYSTEM_IMG_SIZE) $@
 	sgdisk -Z $@
 	gpt-manipulator create $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE) $@
 
-image: bootloader gpt-manipulator rootfs $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(IMAGE_FILE)
+image: bootloader gpt-manipulator rootfs $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(SYSTEM_IMG_FILE)
 	$(call msg, Building system image)
-	dd if=$(OBJDIR)/rootfs.img of=$(IMAGE_FILE) seek=$(ROOTFS_LBA) bs=512 conv=notrunc
+	dd if=$(OBJDIR)/rootfs.img of=$(SYSTEM_IMG_FILE) seek=$(ROOTFS_LBA) bs=512 conv=notrunc
 	$(WRITE_BOOTLOADER)
 
 flash: __force
-	dd if=$(IMAGE_FILE) of=$(TARGET_PATH) bs=1M
+	dd if=$(SYSTEM_IMG_FILE) of=$(TARGET_PATH) bs=1M
+
+clean:
+	rm -rf $(OBJDIR)
 
 gpt-manipulator: $(OBJDIR)/gpt-manipulator
 

@@ -14,7 +14,7 @@ PARTITION_TABLE := gpt.yml
 .PHONY: hart-software-services u-boot payload
 
 define WRITE_BOOTLOADER
-	dd if=$(PAYLOAD_PATH) of=$(IMAGE_FILE) bs=512 seek=34 conv=notrunc
+	dd if=$(PAYLOAD_PATH) of=$(SYSTEM_IMG_FILE) bs=512 seek=34 conv=notrunc
 endef
 
 u-boot: $(OBJDIR)/u-boot
