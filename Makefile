@@ -79,7 +79,7 @@ $(IMAGE_FILE):
 	$(call msg, Prepare partitions)
 	truncate -s $(IMAGE_SIZE) $@
 	sgdisk -Z $@
-	gpt-manipulator create $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE) $@
+	$(OBJDIR)/gpt-manipulator/bin/gpt-manipulator create $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE) $@
 
 image: bootloader gpt-manipulator rootfs $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(IMAGE_FILE)
 	$(call msg, Building system image)
@@ -89,8 +89,7 @@ image: bootloader gpt-manipulator rootfs $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(I
 flash: __force
 	dd if=$(IMAGE_FILE) of=$(TARGET_PATH) bs=1M
 
-gpt-manipulator: $(OBJDIR)/gpt-manipulator
-
-$(OBJDIR)/gpt-manipulator: $(SRCROOT)/external/gpt-manipulator
-	cd $< && cargo build --release
-	cd $< && cargo install --path . --root $(@D)
+gpt-manipulator:
+	rsync --exclude='.git' -al external/gpt-manipulator $(OBJDIR)
+	cd $(OBJDIR)/gpt-manipulator && cargo build --release
+	cd $(OBJDIR)/gpt-manipulator && cargo install --path . --root $(@D)
