@@ -19,6 +19,8 @@ FK_MACHINE := none
 CHROOT_CMD := chroot $(ROOTDIR)
 BOARD_DIR := $(SRCROOT)/board/$(PROFILE)
 PATH := $(PATH):$(OBJDIR)/bin
+PACKAGE_DIR := $(OBJDIR)/package/$(TARGET_VERSION)
+PACKAGE_NAME := ubuntu-$(PROFILE)-$(shell date +'%d-%m-%Y')-$(shell git rev-parse --short HEAD)
 TARGET_PATH ?=
 
 include mk/utils.mk
@@ -26,7 +28,7 @@ include $(BOARD_DIR)/Makefile
 
 export FK_MACHINE MACHINE_ARCH SRCROOT ROOTDIR ROOTFS_UUID
 export CHROOT_CMD KERNEL_VARIANT DEVICETREE_NAME PROFILE
-export UBUNTU_VERSION KERNEL_BOOTARGS BOARD_DIR PATH
+export UBUNTU_VERSION KERNEL_BOOTARGS BOARD_DIR PACKAGE_DIR PACKAGE_NAME PATH
 
 .PHONY: all dirs bootloader rootfs rootfs-impl image flash clean __force
 __force:
@@ -89,6 +91,13 @@ flash: __force
 
 clean:
 	rm -rf $(OBJDIR)
+
+package:
+	mkdir -p $(PACKAGE_DIR)
+	cp $(SYSTEM_IMG_FILE) $(PACKAGE_DIR)/$(PACKAGE_NAME).img
+	cd $(PACKAGE_DIR) && sha256sum $(PACKAGE_NAME).img > $(PACKAGE_NAME).img.sha256sum
+	cd $(PACKAGE_DIR) && XZ_OPT='-T0 -6' tar -cJf $(PACKAGE_NAME).img.tar.xz $(PACKAGE_NAME).img
+	rm $(PACKAGE_DIR)/$(PACKAGE_NAME).img
 
 gpt-manipulator:
 	rsync --exclude='.git' -al external/gpt-manipulator $(OBJDIR)
