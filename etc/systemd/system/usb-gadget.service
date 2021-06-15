@@ -1,0 +1,14 @@
+[Unit]
+Description=Create USB gadget
+Requires=sys-kernel-config.mount
+After=sys-kernel-config.mount
+
+[Service]
+ExecStart=/opt/usb-udc-gadget.sh
+RemainAfterExit=yes
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+# For some strage reson our systemd doesn't yet have usb-gadget.target
+# WantedBy=usb-gadget.target

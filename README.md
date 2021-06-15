@@ -2,7 +2,7 @@
 
 This project is used to build Ubuntu 20.04 (focal) for Conclusive Engineering development boards.
 
-# Prerequisites
+## Prerequisites
 
 Install following packages before continuing with build process.
 
@@ -16,33 +16,34 @@ Initialize submodules containing external projects:
 git submodule update --init --recursive
 ```
 
-# Board specific instructions
+## Board specific instructions
 
 ## KSTR-SAMA5D27
+
 ### Build procedure
 
-1. Prepare directories for building the software package:
+1. Prepare SD card image:
 
-    `make dirs PROFILE=kstr-sama5d27`
+```shell
+sudo make image PROFILE=kstr-sama5d27
+```
 
-2. Build bootloaders for the CPU - AT91Bootstrap and U-Boot:
+### Flash procedure
 
-    `make bootloader PROFILE=kstr-sama5d27`
+1. Run:
 
-3. Build root filesystem:
-
-    `sudo make rootfs PROFILE=kstr-sama5d27`
-
-4. Prepare SD card image:
-
-    `sudo make image PROFILE=kstr-sama5d27`
+```shell
+sudo make flash PROFILE=kstr-sama5d27 TARGET_PATH=</dev/sdX>
+```
 
 ## WHLE-LS1046a
 
 ...
 
-##  RCHD-PF
+## RCHD-PF
+
 ### Board specific prerequisites
+
 Install following packages before continuing with build process.
 
 ```shell
@@ -50,6 +51,7 @@ sudo apt install gcc-riscv64-linux-gnu
 ```
 
 ### Build procedure
+
 1. Prepare eMMC image:
 
     `make image PROFILE=rchd-pf`
@@ -70,5 +72,4 @@ sudo apt install gcc-riscv64-linux-gnu
 
 6. Run:
 
-	`sudo make flash PROFILE=rchd-pf TARGET_PATH=</dev/sdX>`
-
+    `sudo make flash PROFILE=rchd-pf TARGET_PATH=</dev/sdX>`

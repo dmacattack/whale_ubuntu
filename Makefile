@@ -59,10 +59,8 @@ rootfs-impl:
 	$(CHROOT_CMD) apt-get -y dist-upgrade
 	$(CHROOT_CMD) $(call apt_get, $(INCLUDE_PACKAGES))
 	$(CHROOT_CMD) $(call apt_get, linux-image-$(KERNEL_VARIANT))
-	#chroot $(ROOTDIR) linux-update-symlinks install $(KERNEL_VERSION) /boot/vmlinuz-$(KERNEL_VERSION)
-	#ln -sf \
-	#    /usr/lib/$(KERNEL_VERSION)/$(DEVICETREE_NAME) \
-	#    $(ROOTDIR)/boot/board.dtb
+	$(call msg, Board customization)
+	$(CUSTOMIZE_BOARD)
 
 dirs:
 	mkdir -p $(OBJDIR)
