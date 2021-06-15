@@ -38,4 +38,6 @@ define CUSTOMIZE_BOARD
 	$(call msg, Install wifi firmware files)
 	cp -r $(BOARD_DIR)/firmware/ ${ROOTDIR}/usr/lib/
 	cp -r $(BOARD_DIR)/opt/ ${ROOTDIR}
+	cp $(BOARD_DIR)/etc/systemd/system/wlan0-mac-addr.service ${ROOTDIR}/etc/systemd/system/wlan0-mac-addr.service
+	${CHROOT_CMD} systemctl enable wlan0-mac-addr.service
 endef

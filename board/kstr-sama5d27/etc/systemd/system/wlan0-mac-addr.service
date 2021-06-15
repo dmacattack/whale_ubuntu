@@ -1,0 +1,9 @@
+[Unit]
+Wants=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "WLAN0ADDR=`cat /proc/device-tree/ahb/sdio-host\@b0000000/wifi\@1/local-mac-address` && /usr/bin/ip link set dev wlan0 address $WLAN0ADDR"
+
+[Install]
+WantedBy=multi-user.target
