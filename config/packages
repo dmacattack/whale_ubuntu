@@ -15,3 +15,8 @@ wireless-tools
 wpasupplicant
 openssh-server
 network-manager
+linux-firmware
+wireless-regdb
+gpiod
+i2c-tools
+spi-tools

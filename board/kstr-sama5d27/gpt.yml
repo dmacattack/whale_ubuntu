@@ -1,12 +1,15 @@
 ---
 header:
   sector_size: 512
-  hybrid_parts: [1]
+  num_of_part: 128
+  hybrid_parts: [1, 2]
 partitions:
   - number: 1
     type_guid: "21686148-6449-6E6F-744E-656564454649"
-    size: "8MB"
+    first_lba: "2048"
+    size: "16MB"
     name: "boot"
   - number: 2
     type_guid: "4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709"
     name: "rootfs"
+    flags: 4
