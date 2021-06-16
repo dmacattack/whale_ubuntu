@@ -61,7 +61,6 @@ stages:
     - if: '$CI_COMMIT_BRANCH == "master"'
   script:
     - cd /mnt/download/ubuntu/focal && ls -1t | grep ${PROFILE_NAME} | tail -n +11 | xargs -r -d '\n' rm 
-  when: on_success
   tags:
     - yeti
 
