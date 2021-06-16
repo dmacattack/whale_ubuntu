@@ -58,7 +58,7 @@ stages:
   variables:
     GIT_STRATEGY: none
   script:
-    - cd /mnt/download/ubuntu/focal && ls -1t | grep ${PROFILE_NAME} | tail -n +11 | xargs -d '\n' rm
+    - (cd /mnt/download/ubuntu/focal && ls -1t | grep ${PROFILE_NAME} | tail -n +11 | xargs -d '\n' rm ) && exit 0
   when: on_success
   tags:
     - yeti
