@@ -29,7 +29,8 @@ stages:
   script:
     # Check for old build directories and remove it before next build (gitlab reuse same folders overtime)
     # This must be done on build step as gitlab don't use git repo directory when git strategy is none
-    - sudo rm -rf build-*
+    - whoami
+    - /bin/sh -c "sudo rm -v -rf build-*"
     - sudo make image PROFILE=${PROFILE_NAME}
     - sudo make package PROFILE=${PROFILE_NAME}
   artifacts:
