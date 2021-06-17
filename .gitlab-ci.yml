@@ -11,7 +11,7 @@ stages:
   - deploy
   - download-cleanup
 
-.cleanup-remains:
+.check-space:
   stage: prebuild
   variables:
     # We need to use root privileges for building, which causes issues when gitlab tries to cleanup the directory by itself.
@@ -20,15 +20,16 @@ stages:
   script:
     # Show available storage on NAS directory, it will be easier to find fail reason.
     - df -h /mnt/download/ubuntu
-    # Check for old build directories and remove it before next build (gitlab reuse same folders overtime)
-    - sudo rm -rf build-*
   when: always
   tags:
     - yeti
 
-.build-and-deploy:
+.clean-build-package:
   stage: build-deploy
   script:
+    # Check for old build directories and remove it before next build (gitlab reuse same folders overtime)
+    # This must be done on build step as gitlab don't use git repo directory when git strategy is none
+    - sudo rm -rf build-*
     - sudo make image PROFILE=${PROFILE_NAME}
     - sudo make package PROFILE=${PROFILE_NAME}
   artifacts:
@@ -66,12 +67,12 @@ stages:
 
 # KSTR-SAMA5D27
 job-cleanup-kstr-sama5d27:
-  extends: .cleanup-remains
+  extends: .check-space
   variables:
     PROFILE_NAME: kstr-sama5d27
 
 job-build-kstr-sama5d27:
-  extends: .build-and-deploy
+  extends: .clean-build-package
   needs: [job-cleanup-kstr-sama5d27]
   variables:
     PROFILE_NAME: kstr-sama5d27
@@ -90,12 +91,12 @@ job-remove-old-images-kstr-sama5d27:
 
 # WHLE-LS1046A
 job-cleanup-whle-ls1046a:
-  extends: .cleanup-remains
+  extends: .check-space
   variables:
     PROFILE_NAME: whle-ls1046a
 
 job-build-whle-ls1046a:
-  extends: .build-and-deploy
+  extends: .clean-build-package
   needs: [job-cleanup-whle-ls1046a]
   variables:
     PROFILE_NAME: whle-ls1046a
@@ -114,12 +115,12 @@ job-remove-old-images-whle-ls1046a:
 
 # RCHD-PF
 job-cleanup-rchd-pf:
-  extends: .cleanup-remains
+  extends: .check-space
   variables:
     PROFILE_NAME: rchd-pf
 
 job-build-rchd-pf:
-  extends: .build-and-deploy
+  extends: .clean-build-package
   needs: [job-cleanup-rchd-pf]
   variables:
     PROFILE_NAME: rchd-pf
