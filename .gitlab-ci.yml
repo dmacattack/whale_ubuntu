@@ -20,6 +20,9 @@ stages:
   script:
     # Show available storage on NAS directory, it will be easier to find fail reason.
     - df -h /mnt/download/ubuntu
+    # This must be done on build step as gitlab don't use git repo directory when git strategy is none
+    - whoami
+    - sudo rm -v -rf ${CI_PROJECT_DIR}/build-*
   when: always
   tags:
     - yeti
