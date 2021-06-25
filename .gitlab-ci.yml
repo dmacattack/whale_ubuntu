@@ -65,7 +65,8 @@ stages:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
   script:
-    - cd /mnt/download/ubuntu/focal && ls -1t | grep ${PROFILE_NAME} | tail -n +11 | xargs -r -d '\n' rm 
+    # keep last 10 images on download server
+    - cd /mnt/download/ubuntu/focal && ls -1t | grep ${PROFILE_NAME} | tail -n +21 | xargs -r -d '\n' rm 
   tags:
     - yeti
 
