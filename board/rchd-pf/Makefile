@@ -28,3 +28,8 @@ payload: $(OBJDIR)/hart-software-services u-boot
 	$(MAKE) -C $(HSS_PAYLOAD_GENERATOR) all
 	cd $(OBJDIR) && $(HSS_PAYLOAD_GENERATOR)/hss-payload-generator \
 	    -c $(BOARD_DIR)/hss.yml payload.bin
+
+define CUSTOMIZE_BOARD
+	$(call msg, Install wifi firmware files)
+	cp -r $(BOARD_DIR)/firmware/ ${ROOTDIR}/usr/lib/
+endef
