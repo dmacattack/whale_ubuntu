@@ -96,8 +96,7 @@ package:
 	mkdir -p $(PACKAGE_DIR)
 	cp $(SYSTEM_IMG_FILE) $(PACKAGE_DIR)/$(PACKAGE_NAME).img
 	cd $(PACKAGE_DIR) && sha256sum $(PACKAGE_NAME).img > $(PACKAGE_NAME).img.sha256sum
-	cd $(PACKAGE_DIR) && XZ_OPT='-T0 -6' tar -cJf $(PACKAGE_NAME).img.tar.xz $(PACKAGE_NAME).img
-	rm $(PACKAGE_DIR)/$(PACKAGE_NAME).img
+	cd $(PACKAGE_DIR) && xz -6 -T0 $(PACKAGE_NAME).img
 
 gpt-manipulator:
 	rsync --exclude='.git' -al external/gpt-manipulator $(OBJDIR)
