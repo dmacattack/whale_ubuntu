@@ -20,3 +20,4 @@ wireless-regdb
 gpiod
 i2c-tools
 spi-tools
+avahi-daemon
