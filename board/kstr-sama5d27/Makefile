@@ -36,9 +36,9 @@ u-boot: $(OBJDIR)/u-boot
 
 define CUSTOMIZE_BOARD
 	$(call msg, Install wifi firmware files)
-	cp -r $(BOARD_DIR)/firmware/ ${ROOTDIR}/usr/lib/
-	cp -r $(BOARD_DIR)/opt/ ${ROOTDIR}
-	cp $(BOARD_DIR)/etc/systemd/system/wlan0-mac-addr.service ${ROOTDIR}/etc/systemd/system/wlan0-mac-addr.service
+	cp -vr $(BOARD_DIR)/firmware/ ${ROOTDIR}/usr/lib/
+	cp -vr $(BOARD_DIR)/opt/ ${ROOTDIR}
+	cp -vr $(BOARD_DIR)/etc/ ${ROOTDIR}
 	${CHROOT_CMD} systemctl enable wlan0-mac-addr.service
 	ln -s ${ROOTDIR}/lib/systemd/system/getty@.service ${ROOTDIR}/etc/systemd/system/getty.target.wants/getty@ttyGS0.service
 endef

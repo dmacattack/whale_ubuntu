@@ -21,3 +21,4 @@ gpiod
 i2c-tools
 spi-tools
 avahi-daemon
+udhcpd
