@@ -1,0 +1,11 @@
+[Unit]
+Description=Use PMIC to poweroff instead of Atmel SHDWC controler
+DefaultDependencies=no
+After=final.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sh -c '/usr/bin/echo 1 > /sys/bus/i2c/devices/0-005b/master_off'
+
+[Install]
+WantedBy=poweroff.target halt.target
