@@ -28,7 +28,7 @@ atf: $(OBJDIR)/atf rcw
 	$(MAKE) -C $< pbl \
 	    PLAT=ls1046awhle \
 	    BOOT_MODE=emmc \
-	    RCW=../rcw/whle-ls1046a/NN_SSFFPPPP_1133_5577/rcw_1600_sdboot.bin \
+	    RCW=../rcw/whle-ls1046a/NN_SSFFPPPP_1133_5577/rcw_1800_emmc.bin \
 	    CROSS_COMPILE=aarch64-linux-gnu-
 
 u-boot: $(OBJDIR)/u-boot
