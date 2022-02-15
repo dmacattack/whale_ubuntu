@@ -66,7 +66,7 @@ stages:
     - if: '$CI_COMMIT_BRANCH == "master"'
   script:
     # keep last 10 images on download server
-    - cd /mnt/download/ubuntu/focal && ls -1t | grep ${PROFILE_NAME} | tail -n +21 | xargs -r -d '\n' rm 
+    - cd /mnt/download/ubuntu/focal && ls -1t | grep ${PROFILE_NAME} | tail -n +21 | xargs -r -d '\n' rm
   tags:
     - yeti
 
@@ -117,6 +117,30 @@ job-remove-old-images-whle-ls1046a:
   dependencies: [job-deploy-whle-ls1046a]
   variables:
     PROFILE_NAME: whle-ls1046a
+
+# WHLE-LS1088A
+job-cleanup-whle-ls1088a:
+  extends: .check-space
+  variables:
+    PROFILE_NAME: whle-ls1088a
+
+job-build-whle-ls1088a:
+  extends: .clean-build-package
+  needs: [job-cleanup-whle-ls1088a]
+  variables:
+    PROFILE_NAME: whle-ls1088a
+
+job-deploy-whle-ls1088a:
+  extends: .deploy-image
+  needs: [job-build-whle-ls1088a]
+  variables:
+    PROFILE_NAME: whle-ls1088a
+
+job-remove-old-images-whle-ls1088a:
+  extends: .remove-old-images
+  dependencies: [job-deploy-whle-ls1088a]
+  variables:
+    PROFILE_NAME: whle-ls1088a
 
 # RCHD-PF
 job-cleanup-rchd-pf:

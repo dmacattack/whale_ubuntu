@@ -21,3 +21,9 @@
 [submodule "external/qoriq-fm-ucode"]
         path = external/qoriq-fm-ucode
         url = https://github.com/NXP/qoriq-fm-ucode
+[submodule "external/qoriq-mc-binary"]
+	path = external/qoriq-mc-binary
+	url = https://github.com/NXP/qoriq-mc-binary
+[submodule "external/mc-utils"]
+	path = external/mc-utils
+	url = ../whle-ls1/mc-utils.git
