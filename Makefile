@@ -61,6 +61,7 @@ rootfs-impl:
 	$(CHROOT_CMD) apt-get -y dist-upgrade
 	$(CHROOT_CMD) $(call apt_get, $(INCLUDE_PACKAGES))
 	$(CHROOT_CMD) $(call apt_get, linux-image-$(KERNEL_VARIANT))
+	$(CHROOT_CMD) apt-get -y autoremove
 	$(call msg, Board customization)
 	$(CUSTOMIZE_BOARD)
 
@@ -70,7 +71,7 @@ dirs:
 
 bootloader: $(addprefix $(OBJDIR)/.stamp-sync-,$(BOOTLOADER_MODULES)) $(BOOTLOADER_TARGETS)
 
-$(ROOTFS_FILE):
+$(ROOTFS_FILE): __force
 	$(call msg, Prepare rootfs)
 	truncate -s $(ROOTFS_SIZE) $@
 	mkfs.ext4 -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $@
