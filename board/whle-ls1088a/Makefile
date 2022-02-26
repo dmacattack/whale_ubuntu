@@ -8,8 +8,8 @@ KERNEL_BOOTARGS := console=ttyS0,115200 root=/dev/mmcblk0p1 earlycon=uart8250,mm
 BL2_PATH := $(OBJDIR)/atf/build/ls1088awhle/release/bl2_emmc.pbl
 FIP_PATH := $(OBJDIR)/atf/build/ls1088awhle/release/fip.bin
 MC_FW_PATH := $(OBJDIR)/qoriq-mc-binary/ls1088a/mc_ls1088a_10.30.0.itb
-DPAA2_DPL_PATH := $(OBJDIR)/mc-utils/config/ls1088a/WHLE-LS1088A/dpl-eth.0x1D_0x0D.dts
-DPAA2_DPC_PATH := $(OBJDIR)/mc-utils/config/ls1088a/WHLE-LS1088A/dpc.0x1D-0x0D.dts
+DPAA2_DPL_PATH := $(OBJDIR)/mc-utils/config/ls1088a/WHLE-LS1088A/dpl-eth.0x1D_0x0D.dtb
+DPAA2_DPC_PATH := $(OBJDIR)/mc-utils/config/ls1088a/WHLE-LS1088A/dpc.0x1D-0x0D.dtb
 SYSTEM_PARTITION_INDEX := 1
 PARTITION_TABLE := gpt.yml
 
