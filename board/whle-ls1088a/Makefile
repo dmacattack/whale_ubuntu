@@ -4,7 +4,7 @@ BOOTLOADER_TARGETS := atf fip qoriq-mc-binary mc-utils
 BOOTLOADER_MODULES := rcw atf u-boot qoriq-mc-binary mc-utils
 DEVICETREE_NAME := freescale/fsl-ls1088a-whle.dtb
 KERNEL_VARIANT := whle-ls1
-KERNEL_BOOTARGS := console=ttyS0,115200 root=/dev/mmcblk0p1 earlycon=uart8250,mmio,0x21c0500 rootwait rw
+KERNEL_BOOTARGS := console=ttyS0,115200 root=/dev/mmcblk0p1 earlycon=uart8250,mmio,0x21c0500 rootwait rw arm-smmu.disable_bypass=0
 BL2_PATH := $(OBJDIR)/atf/build/ls1088awhle/release/bl2_emmc.pbl
 FIP_PATH := $(OBJDIR)/atf/build/ls1088awhle/release/fip.bin
 MC_FW_PATH := $(OBJDIR)/qoriq-mc-binary/ls1088a/mc_ls1088a_10.30.0.itb
@@ -32,7 +32,7 @@ atf: $(OBJDIR)/atf rcw
 	$(MAKE) -C $< pbl \
 	    PLAT=ls1088awhle \
 	    BOOT_MODE=emmc \
-	    RCW=../rcw/whle-ls1088a/FFSSRR_PPP_0x1d_0x14/rcw_1400_sdboot.bin \
+	    RCW=../rcw/whle-ls1088a/FFSSRR_PPP_0x1d_0x14/rcw_1400_emmc.bin \
 	    CROSS_COMPILE=aarch64-linux-gnu-
 
 u-boot: $(OBJDIR)/u-boot
