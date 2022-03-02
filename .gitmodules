@@ -7,11 +7,11 @@
 [submodule "external/rcw"]
         path = external/rcw
         url = ../whle-ls1/rcw.git
-        branch = whle-ls1046a
+        branch = master
 [submodule "external/atf"]
         path = external/atf
         url = ../whle-ls1/atf.git
-        branch = whle-ls1046a
+        branch = master
 [submodule "at91bootstrap"]
         path = external/at91bootstrap
         url = ../kstr-sama5d27/at91bootstrap.git
@@ -19,11 +19,13 @@
         path = external/hart-software-services
         url = ../rchd-pf/hart-software-services.git
 [submodule "external/qoriq-fm-ucode"]
-        path = external/qoriq-fm-ucode
-        url = https://github.com/NXP/qoriq-fm-ucode
+	path = external/qoriq-fm-ucode
+	url = https://github.com/NXP/qoriq-fm-ucode
+	branch = integration
 [submodule "external/qoriq-mc-binary"]
 	path = external/qoriq-mc-binary
 	url = https://github.com/NXP/qoriq-mc-binary
+	branch = integration
 [submodule "external/mc-utils"]
 	path = external/mc-utils
 	url = ../whle-ls1/mc-utils.git
