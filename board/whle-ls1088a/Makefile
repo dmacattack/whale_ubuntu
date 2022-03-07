@@ -37,7 +37,7 @@ atf: $(OBJDIR)/atf rcw
 
 u-boot: $(OBJDIR)/u-boot
 	$(call msg, Building U-Boot)
-	$(MAKE) -C $< whle_ls1088a_defconfig
+	$(MAKE) -C $< whle_ls1088a_emmc_defconfig
 	$(MAKE) -C $< CROSS_COMPILE=aarch64-linux-gnu-
 
 fip: $(OBJDIR)/atf atf u-boot
