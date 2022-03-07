@@ -1,8 +1,8 @@
 #!/bin/sh
 
 KERNEL_VERSION=$(${CHROOT_CMD} dpkg-query \
-    --showformat='${Version}' \
-    --show linux-image-${KERNEL_VARIANT})
+    --showformat='${Depends}' \
+    --show linux-image-${KERNEL_VARIANT} | cut -d, -f1 | cut -d- -f3-)
 
 ln -sf \
     /usr/lib/linux-image-${KERNEL_VERSION}/${DEVICETREE_NAME} \
