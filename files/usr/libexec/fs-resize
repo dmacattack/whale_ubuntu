@@ -1,0 +1,22 @@
+#!/bin/sh
+
+DEVICE="$1"
+PART="$2"
+NODE="${DEVICE}$3"
+
+RET=$(/usr/bin/df ${NODE} | /usr/bin/awk '$2+0 < 2000000 && NR != 1')
+if [ -z ${RET} ]
+then
+	echo "Already resized"
+	exit 0
+fi
+
+/usr/sbin/sgdisk -d ${PART} ${DEVICE}
+/usr/sbin/sgdisk -n ${PART}:32768:0 ${DEVICE}
+/usr/sbin/partprobe ${DEVICE}
+/usr/sbin/tune2fs -O has_journal ${NODE}
+/usr/sbin/resize2fs ${NODE}
+[ $? = 0 ] && echo "Starting resizefs: OK" || echo "Starting resizefs: FAIL"
+
+exit $?
+

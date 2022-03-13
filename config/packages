@@ -22,3 +22,5 @@ i2c-tools
 spi-tools
 avahi-daemon
 udhcpd
+parted
+gdisk

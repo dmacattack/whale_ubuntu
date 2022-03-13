@@ -1,0 +1,10 @@
+[Unit]
+Description=Extend rootfs to maximum size
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "/usr/libexec/fs-resize /dev/mmcblk0 1 p1"
+
+[Install]
+WantedBy=multi-user.target
+
