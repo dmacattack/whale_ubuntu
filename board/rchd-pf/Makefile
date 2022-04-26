@@ -2,7 +2,7 @@ MACHINE_ARCH := riscv64
 BOOT_SIZE := 32M
 BOOTLOADER_TARGETS := u-boot payload
 BOOTLOADER_MODULES := hart-software-services u-boot
-DEVICETREE_NAME := microchip/mpfs-rchd-pf.dtb
+DEVICETREE_NAME := microchip/microchip-mpfs-rchd-pf.dtb
 KERNEL_VARIANT := rchd-pf
 KERNEL_BOOTARGS := console=ttyS0,115200 root=/dev/mmcblk0p2 earlycon=sbi rootwait rw
 UBOOT_PATH := $(OBJDIR)/u-boot/u-boot.bin
