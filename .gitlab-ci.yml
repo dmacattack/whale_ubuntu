@@ -36,6 +36,7 @@ stages:
     - /bin/sh -c "sudo rm -v -rf build-*"
     - sudo make image PROFILE=${PROFILE_NAME}
     - sudo make package PROFILE=${PROFILE_NAME}
+    - sudo chown -R gitlab-runner:root build-${PROFILE_NAME}/package/
   artifacts:
     paths:
       - build-${PROFILE_NAME}/package/
