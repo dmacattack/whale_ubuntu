@@ -1,4 +1,5 @@
 SRCROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+GITHASH := $(shell git rev-parse --short HEAD)
 TARGET_VERSION ?= focal
 UBUNTU_VERSION ?= 20.04
 OBJDIR ?= $(SRCROOT)/build-$(PROFILE)
@@ -20,7 +21,7 @@ CHROOT_CMD := chroot $(ROOTDIR)
 BOARD_DIR := $(SRCROOT)/board/$(PROFILE)
 PATH := $(PATH):$(OBJDIR)/bin
 PACKAGE_DIR := $(OBJDIR)/package/$(TARGET_VERSION)
-PACKAGE_NAME := ubuntu-$(PROFILE)-$(shell date +'%d-%m-%Y')-$(shell git rev-parse --short HEAD)
+PACKAGE_NAME := ubuntu-$(PROFILE)-$(shell date +'%Y-%m-%d')-$(GITHASH)
 TARGET_PATH ?=
 
 include mk/utils.mk
