@@ -75,7 +75,7 @@ bootloader: $(addprefix $(OBJDIR)/.stamp-sync-,$(BOOTLOADER_MODULES)) $(BOOTLOAD
 $(ROOTFS_FILE): __force
 	$(call msg, Prepare rootfs)
 	truncate -s $(ROOTFS_SIZE) $@
-	mkfs.ext4 -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $@
+	mkfs.ext4 -O ^metadata_csum -F -U $(ROOTFS_UUID) -d $(ROOTDIR) $@
 
 $(SYSTEM_IMG_FILE):
 	$(call msg, Prepare partitions)
