@@ -12,6 +12,7 @@ DPAA2_DPL_PATH := $(OBJDIR)/mc-utils/config/ls1088a/WHLE-LS1088A/dpl-eth.0x1D_0x
 DPAA2_DPC_PATH := $(OBJDIR)/mc-utils/config/ls1088a/WHLE-LS1088A/dpc.0x1D-0x0D.dtb
 SYSTEM_PARTITION_INDEX := 1
 PARTITION_TABLE := gpt.yml
+SUPPORTS_EFI_MODE := yes
 
 .PHONY: rcw atf u-boot fip qoriq-fm-ucode
 
@@ -32,6 +33,7 @@ atf: $(OBJDIR)/atf rcw
 	$(MAKE) -C $< pbl \
 	    PLAT=ls1088awhle \
 	    BOOT_MODE=emmc \
+	    POLICY_OTA=0 \
 	    RCW=../rcw/whle-ls1088a/FFSSRR_PPP_0x1d_0x14/rcw_1400_emmc.bin \
 	    CROSS_COMPILE=aarch64-linux-gnu-
 

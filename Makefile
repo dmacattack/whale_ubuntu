@@ -1,13 +1,13 @@
 SRCROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 GITHASH := $(shell git rev-parse --short HEAD)
-TARGET_VERSION ?= focal
-UBUNTU_VERSION ?= 20.04
+TARGET_VERSION ?= jammy
+UBUNTU_VERSION ?= 22.04
 OBJDIR ?= $(SRCROOT)/build-$(PROFILE)
 SYSTEM_IMG_FILE ?= $(OBJDIR)/system.img
-SYSTEM_IMG_SIZE ?= 1600M
+SYSTEM_IMG_SIZE ?= 2000M
 ROOTFS_FILE := $(OBJDIR)/rootfs.img
 ROOTFS_UUID := $(shell uuidgen)
-ROOTFS_SIZE ?= 1536M
+ROOTFS_SIZE ?= 1900M
 ROOTFS_LBA = $(call get_partition_start, $(SYSTEM_IMG_FILE), $(SYSTEM_PARTITION_INDEX))
 BOOT_SIZE_BYTES = $(shell numfmt --from=iec $(BOOT_SIZE))
 BOOT_SIZE_BLOCKS = $(shell expr $(BOOT_SIZE_BYTES) / 1024)
@@ -22,7 +22,9 @@ BOARD_DIR := $(SRCROOT)/board/$(PROFILE)
 PATH := $(PATH):$(OBJDIR)/bin
 PACKAGE_DIR := $(OBJDIR)/package/$(TARGET_VERSION)
 PACKAGE_NAME := ubuntu-$(PROFILE)-$(shell date +'%Y-%m-%d')-$(GITHASH)
+GPT_MANIPULATOR := $(OBJDIR)/gpt-manipulator/bin/gpt-manipulator
 TARGET_PATH ?=
+EFI_MODE ?= no
 
 include mk/utils.mk
 include $(BOARD_DIR)/Makefile
@@ -81,7 +83,7 @@ $(SYSTEM_IMG_FILE):
 	$(call msg, Prepare partitions)
 	truncate -s $(SYSTEM_IMG_SIZE) $@
 	sgdisk -Z $@
-	$(OBJDIR)/gpt-manipulator/bin/gpt-manipulator create $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE) $@
+	$(GPT_MANIPULATOR) create $(SRCROOT)/board/$(PROFILE)/$(PARTITION_TABLE) $@
 
 image: bootloader gpt-manipulator rootfs $(CUSTOMIZE_TARGETS) $(ROOTFS_FILE) $(SYSTEM_IMG_FILE)
 	$(call msg, Building system image)

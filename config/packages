@@ -1,6 +1,5 @@
 kmod
 linux-base
-crda
 initramfs-tools
 locales
 nano

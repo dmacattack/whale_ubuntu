@@ -10,6 +10,7 @@ FIP_PATH := $(OBJDIR)/atf/build/ls1046awhle/release/fip.bin
 FMAN_FW_PATH := $(OBJDIR)/qoriq-fm-ucode/fsl_fman_ucode_ls1046_r1.0_106_4_18.bin
 SYSTEM_PARTITION_INDEX := 1
 PARTITION_TABLE := gpt.yml
+SUPPORTS_EFI_MODE := yes
 
 .PHONY: rcw atf u-boot fip qoriq-fm-ucode
 
@@ -28,6 +29,7 @@ atf: $(OBJDIR)/atf rcw
 	$(MAKE) -C $< pbl \
 	    PLAT=ls1046awhle \
 	    BOOT_MODE=emmc \
+	    POLICY_OTA=0 \
 	    RCW=../rcw/whle-ls1046a/NN_SSFFPPPP_1133_5577/rcw_1800_emmc.bin \
 	    CROSS_COMPILE=aarch64-linux-gnu-
 
