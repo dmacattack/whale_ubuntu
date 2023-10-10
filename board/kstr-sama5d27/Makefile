@@ -23,6 +23,16 @@ define WRITE_BOOTLOADER
 	dd if=$(OBJDIR)/boot.img of=$(SYSTEM_IMG_FILE) bs=512 seek=$(BOOT_LBA) conv=notrunc
 endef
 
+define CUSTOMIZE_BOARD
+	$(call msg, Install WiFi firmware files)
+	cp -vr $(BOARD_DIR)/firmware/ ${ROOTDIR}/usr/lib/
+	cp -vr $(BOARD_DIR)/opt/ ${ROOTDIR}
+	cp -vr $(BOARD_DIR)/etc/ ${ROOTDIR}
+	$(CHROOT_CMD) systemctl enable wlan0-mac-addr.service
+	$(CHROOT_CMD) systemctl enable pmic-poweroff.service
+	ln -s ${ROOTDIR}/lib/systemd/system/getty@.service ${ROOTDIR}/etc/systemd/system/getty.target.wants/getty@ttyGS0.service
+endef
+
 at91bootstrap: $(OBJDIR)/at91bootstrap
 	$(call msg, Building AT91Bootstrap)
 	$(MAKE) -C $< CROSS_COMPILE=arm-linux-gnueabihf- kstr_sama5d27sd_uboot_defconfig
@@ -34,12 +44,3 @@ u-boot: $(OBJDIR)/u-boot
 	$(MAKE) -C $< ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- kstr_sama5d27_defconfig
 	$(MAKE) -C $< ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 
-define CUSTOMIZE_BOARD
-	$(call msg, Install wifi firmware files)
-	cp -vr $(BOARD_DIR)/firmware/ ${ROOTDIR}/usr/lib/
-	cp -vr $(BOARD_DIR)/opt/ ${ROOTDIR}
-	cp -vr $(BOARD_DIR)/etc/ ${ROOTDIR}
-	${CHROOT_CMD} systemctl enable wlan0-mac-addr.service
-	${CHROOT_CMD} systemctl enable pmic-poweroff.service
-	ln -s ${ROOTDIR}/lib/systemd/system/getty@.service ${ROOTDIR}/etc/systemd/system/getty.target.wants/getty@ttyGS0.service
-endef

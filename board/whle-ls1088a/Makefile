@@ -12,7 +12,6 @@ DPAA2_DPL_PATH := $(OBJDIR)/mc-utils/config/ls1088a/WHLE-LS1088A/dpl-eth.0x1D_0x
 DPAA2_DPC_PATH := $(OBJDIR)/mc-utils/config/ls1088a/WHLE-LS1088A/dpc.0x1D-0x0D.dtb
 SYSTEM_PARTITION_INDEX := 1
 PARTITION_TABLE := gpt.yml
-SUPPORTS_EFI_MODE := yes
 
 .PHONY: rcw atf u-boot fip qoriq-fm-ucode
 
