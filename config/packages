@@ -24,3 +24,4 @@ udhcpd
 parted
 gdisk
 grub-common
+mtd-utils
