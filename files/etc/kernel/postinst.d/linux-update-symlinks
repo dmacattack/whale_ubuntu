@@ -1,0 +1,8 @@
+#!/bin/sh
+VERSION="$1"
+IMAGE_PATH="$2"
+
+[ -n "$VERSION" ] || exit 0
+[ -n "$IMAGE_PATH" ] || exit 0
+
+linux-update-symlinks install $VERSION $IMAGE_PATH
