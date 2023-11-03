@@ -105,4 +105,4 @@ package:
 gpt-manipulator:
 	rsync --exclude='.git' -al external/gpt-manipulator $(OBJDIR)
 	cd $(OBJDIR)/gpt-manipulator && cargo build --release
-	cd $(OBJDIR)/gpt-manipulator && cargo install --path . --root $(@D)
+	cd $(OBJDIR)/gpt-manipulator && cargo install --locked --path . --root $(@D)
