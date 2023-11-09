@@ -1,6 +1,6 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  GIT_CLEAN_FLAGS: ""
+  GIT_CLEAN_FLAGS: none
 
 # Building using debototstrap, chroot requires root access, following changes needs to
 # be added using 'sudo visudo'
