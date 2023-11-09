@@ -41,5 +41,6 @@ build-whle-ls1088a:
 
 build-rchd-pf:
   extends: .build-package
+  when: manual
   variables:
     PROFILE_NAME: rchd-pf
