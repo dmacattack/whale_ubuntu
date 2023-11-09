@@ -6,163 +6,39 @@ variables:
 # gitlab-runner ALL=(ALL) NOPASSWD: /usr/bin/make, /usr/bin/cp, /usr/bin/rm
 
 stages:
-  - prebuild
-  - build-deploy
-  - deploy
-  - download-cleanup
+- build
 
-.check-space:
-  stage: prebuild
-  variables:
-    # We need to use root privileges for building, which causes issues when gitlab tries to cleanup the directory by itself.
-    # To avoid this `GIT_STRATEGY: none` gives a chance to do something before gitlab reinitializes the repository.
-    GIT_STRATEGY: none
+.build-package:
+  stage: build
   script:
-    # Show available storage on NAS directory, it will be easier to find fail reason.
-    - df -h /mnt/download/ubuntu
-    # This must be done on build step as gitlab don't use git repo directory when git strategy is none
-    - whoami
-    - sudo rm -v -rf ${CI_PROJECT_DIR}/build-*
-  when: always
-  tags:
-    - yeti
-
-.clean-build-package:
-  stage: build-deploy
-  script:
-    # Check for old build directories and remove it before next build (gitlab reuse same folders overtime)
-    # This must be done on build step as gitlab don't use git repo directory when git strategy is none
-    - whoami
-    - /bin/sh -c "sudo rm -v -rf build-*"
+    - sudo make clean PROFILE=${PROFILE_NAME}
     - sudo make image PROFILE=${PROFILE_NAME}
     - sudo make package PROFILE=${PROFILE_NAME}
     - sudo chown -R gitlab-runner:root build-${PROFILE_NAME}/package/
   artifacts:
     paths:
       - build-${PROFILE_NAME}/package/
-    expire_in: 1d
-  tags:
-    - yeti
-
-.deploy-image:
-  stage: deploy
-  variables:
-    GIT_STRATEGY: none
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-  script:
-    - cd build-${PROFILE_NAME}/package/ && sudo cp -r * /mnt/download/ubuntu/
-  artifacts:
-    # disable artifacts collection
-    paths: []
+    expire_in: 30d
   tags:
     - yeti
 
 
-.remove-old-images:
-  stage: download-cleanup
-  variables:
-    GIT_STRATEGY: none
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-  script:
-    # keep last 10 images on download server
-    - cd /mnt/download/ubuntu/focal && ls -1t | grep ${PROFILE_NAME} | tail -n +21 | xargs -r -d '\n' rm
-  tags:
-    - yeti
-
-# KSTR-SAMA5D27
-job-cleanup-kstr-sama5d27:
-  extends: .check-space
+build-kstr-sama5d27:
+  extends: .build-package
   variables:
     PROFILE_NAME: kstr-sama5d27
 
-job-build-kstr-sama5d27:
-  extends: .clean-build-package
-  needs: [job-cleanup-kstr-sama5d27]
-  variables:
-    PROFILE_NAME: kstr-sama5d27
-
-job-deploy-kstr-sama5d27:
-  extends: .deploy-image
-  needs: [job-build-kstr-sama5d27]
-  variables:
-    PROFILE_NAME: kstr-sama5d27
-
-job-remove-old-images-kstr-sama5d27:
-  extends: .remove-old-images
-  dependencies: [job-deploy-kstr-sama5d27]
-  variables:
-    PROFILE_NAME: kstr-sama5d27
-
-# WHLE-LS1046A
-job-cleanup-whle-ls1046a:
-  extends: .check-space
+build-whle-ls1046a:
+  extends: .build-package
   variables:
     PROFILE_NAME: whle-ls1046a
 
-job-build-whle-ls1046a:
-  extends: .clean-build-package
-  needs: [job-cleanup-whle-ls1046a]
-  variables:
-    PROFILE_NAME: whle-ls1046a
-
-job-deploy-whle-ls1046a:
-  extends: .deploy-image
-  needs: [job-build-whle-ls1046a]
-  variables:
-    PROFILE_NAME: whle-ls1046a
-
-job-remove-old-images-whle-ls1046a:
-  extends: .remove-old-images
-  dependencies: [job-deploy-whle-ls1046a]
-  variables:
-    PROFILE_NAME: whle-ls1046a
-
-# WHLE-LS1088A
-job-cleanup-whle-ls1088a:
-  extends: .check-space
+build-whle-ls1088a:
+  extends: .build-package
   variables:
     PROFILE_NAME: whle-ls1088a
 
-job-build-whle-ls1088a:
-  extends: .clean-build-package
-  needs: [job-cleanup-whle-ls1088a]
-  variables:
-    PROFILE_NAME: whle-ls1088a
-
-job-deploy-whle-ls1088a:
-  extends: .deploy-image
-  needs: [job-build-whle-ls1088a]
-  variables:
-    PROFILE_NAME: whle-ls1088a
-
-job-remove-old-images-whle-ls1088a:
-  extends: .remove-old-images
-  dependencies: [job-deploy-whle-ls1088a]
-  variables:
-    PROFILE_NAME: whle-ls1088a
-
-# RCHD-PF
-job-cleanup-rchd-pf:
-  extends: .check-space
-  variables:
-    PROFILE_NAME: rchd-pf
-
-job-build-rchd-pf:
-  extends: .clean-build-package
-  needs: [job-cleanup-rchd-pf]
-  variables:
-    PROFILE_NAME: rchd-pf
-
-job-deploy-rchd-pf:
-  extends: .deploy-image
-  needs: [job-build-rchd-pf]
-  variables:
-    PROFILE_NAME: rchd-pf
-
-job-remove-old-images-rchd-pf:
-  extends: .remove-old-images
-  dependencies: [job-deploy-rchd-pf]
+build-rchd-pf:
+  extends: .build-package
   variables:
     PROFILE_NAME: rchd-pf
