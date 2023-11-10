@@ -7,9 +7,12 @@ variables:
 # gitlab-runner ALL=(ALL) NOPASSWD: /usr/bin/make, /usr/bin/cp, /usr/bin/rm
 
 stages:
-- build
+  - build
+  - upload
 
 .build-package:
+  tags:
+    - ubuntu20
   stage: build
   script:
     - sudo make clean PROFILE=${PROFILE_NAME}
@@ -18,11 +21,26 @@ stages:
     - sudo chown -R gitlab-runner:root build-${PROFILE_NAME}/package/
   artifacts:
     paths:
-      - build-${PROFILE_NAME}/package/
-    expire_in: 30d
-  tags:
-    - yeti
+      - build-${PROFILE_NAME}/
+    untracked: false
+    when: on_success
+    expire_in: "30 days"
 
+.upload-packages:
+  tags:
+    - ubuntu20
+  stage: upload
+  variables:
+    PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PROFILE_NAME}"
+  script:
+    - |
+      for f in build-${PROFILE_NAME}/package/*; do \
+        curl \
+          --fail-with-body \
+          --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+          --upload-file ${f} \
+          ${PACKAGE_REGISTRY_URL}/${CI_PIPELINE_IID}-${CI_COMMIT_SHORT_SHA}/$(basename ${f}); \
+        done
 
 build-kstr-sama5d27:
   extends: .build-package
@@ -41,6 +59,27 @@ build-whle-ls1088a:
 
 build-rchd-pf:
   extends: .build-package
+  when: manual
+  variables:
+    PROFILE_NAME: rchd-pf
+
+upload-kstr-sama5d27:
+  extends: .upload-packages
+  variables:
+    PROFILE_NAME: kstr-sama5d27
+
+upload-whle-ls1046a:
+  extends: .upload-packages
+  variables:
+    PROFILE_NAME: whle-ls1046a
+
+upload-whle-ls1088a:
+  extends: .upload-packages
+  variables:
+    PROFILE_NAME: whle-ls1088a
+
+upload-rchd-pf:
+  extends: .upload-packages
   when: manual
   variables:
     PROFILE_NAME: rchd-pf
