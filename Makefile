@@ -100,6 +100,7 @@ clean:
 
 package:
 	mkdir -p $(PACKAGE_DIR)
+	rm -rf $(PACKAGE_DIR)/*
 	cp $(SYSTEM_IMG_FILE) $(PACKAGE_DIR)/$(PACKAGE_NAME).img
 	cd $(PACKAGE_DIR) && sha256sum $(PACKAGE_NAME).img > $(PACKAGE_NAME).img.sha256sum
 	cd $(PACKAGE_DIR) && xz -6 -T0 $(PACKAGE_NAME).img
