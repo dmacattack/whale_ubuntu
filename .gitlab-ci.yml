@@ -21,7 +21,7 @@ stages:
     - sudo chown -R gitlab-runner:root build-${PROFILE_NAME}/package/
   artifacts:
     paths:
-      - build-${PROFILE_NAME}/
+      - build-${PROFILE_NAME}/package/
     untracked: false
     when: on_success
     expire_in: "30 days"
