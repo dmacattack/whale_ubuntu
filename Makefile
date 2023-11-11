@@ -12,13 +12,14 @@ ROOTFS_LBA = $(call get_partition_start, $(SYSTEM_IMG_FILE), $(SYSTEM_PARTITION_
 BOOT_SIZE_BYTES = $(shell numfmt --from=iec $(BOOT_SIZE))
 BOOT_SIZE_BLOCKS = $(shell expr $(BOOT_SIZE_BYTES) / 1024)
 ROOTDIR := $(OBJDIR)/rootfs
+BOARD_DIR := $(SRCROOT)/board/$(PROFILE)
 EXTERNAL_DIR := $(SRCROOT)/external
 INCLUDE_PACKAGES := $(shell cat $(SRCROOT)/config/packages | sed -z 's/\n/ /g')
+EXTRA_PACKAGES := $(shell cat $(BOARD_DIR)/packages 2>/dev/null | sed -z 's/\n/ /g')
 CUSTOMIZE_SCRIPTS := $(notdir $(wildcard $(SRCROOT)/customize/*.sh))
 CUSTOMIZE_TARGETS := $(sort $(addprefix $(OBJDIR)/.stamp-customize-, $(basename $(CUSTOMIZE_SCRIPTS))))
 FK_MACHINE := none
 CHROOT_CMD := chroot $(ROOTDIR)
-BOARD_DIR := $(SRCROOT)/board/$(PROFILE)
 PATH := $(PATH):$(OBJDIR)/bin
 PACKAGE_DIR := $(OBJDIR)/package
 PACKAGE_NAME := ubuntu-$(TARGET_VERSION)-$(PROFILE)-$(shell date +'%Y-%m-%d')-$(GITHASH)
@@ -63,6 +64,7 @@ rootfs-impl:
 	$(CHROOT_CMD) apt-get -y update
 	$(CHROOT_CMD) apt-get -y dist-upgrade
 	$(CHROOT_CMD) $(call apt_get, $(INCLUDE_PACKAGES))
+	$(CHROOT_CMD) $(call apt_get, $(EXTRA_PACKAGES))
 	$(CHROOT_CMD) $(call apt_get, linux-image-$(KERNEL_VARIANT))
 	$(CHROOT_CMD) apt-get -y autoremove
 	$(call msg, Board customization)
