@@ -36,9 +36,35 @@ sudo make image PROFILE=kstr-sama5d27
 sudo make flash PROFILE=kstr-sama5d27 TARGET_PATH=</dev/sdX>
 ```
 
-## WHLE-LS1046a
+## WHLE-LS1xxA
 
-...
+### Build procedure
+
+1. Prepare eMMC image:
+
+```shell
+sudo make image PROFILE=whle-ls1046a # WHLE-LS1026A and WHLE-LS1046A or
+sudo make image PROFILE=whle-ls1088a # WHLE-LS1048A and WHLE-LS1088A
+```
+
+### Flash procedure
+
+Flashing can be performed from the U-Boot prompt via TFTP.
+
+1. Configure the network in the U-Boot
+
+```shell
+=> setenv ipaddr x.x.x.x
+=> setenv serverip x.x.x.y
+```
+
+Alternatively, use the `dhcp` command to configure network using DHCP.
+
+2. Download the image to the eMMC memory:
+
+```shell
+=> tftpclone mmc 0 0 ubuntu-jammy-whle-ls1088a-2023-11-11-ebbad53.img
+```
 
 ## RCHD-PF
 
@@ -54,7 +80,9 @@ sudo apt install gcc-riscv64-linux-gnu
 
 1. Prepare eMMC image:
 
-    `make image PROFILE=rchd-pf`
+```shell
+sudo make image PROFILE=rchd-pf`
+```
 
 ### Flash procedure
 
