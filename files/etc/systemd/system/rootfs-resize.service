@@ -1,0 +1,11 @@
+[Unit]
+Description=Resize the root partition and filesystem.
+ConditionPathExists=!/var/lib/rootfs-resized
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/rootfs_resize.sh
+ExecStartPost=/usr/bin/touch /var/lib/rootfs-resized
+
+[Install]
+WantedBy=multi-user.target
