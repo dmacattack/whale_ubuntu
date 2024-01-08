@@ -24,3 +24,5 @@ udhcpd
 parted
 gdisk
 mtd-utils
+cloud-guest-utils
+
