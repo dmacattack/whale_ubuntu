@@ -25,4 +25,4 @@ parted
 gdisk
 mtd-utils
 cloud-guest-utils
-
+snmpd
